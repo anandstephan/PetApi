@@ -2,9 +2,10 @@ const express = require("express");
 const Problem = require("../model/problem");
 const Species = require("../model/species");
 const ProblemDetail = require("../model/problemdetail");
+const SaveProblem = require("../model/saveProblem");
 const router = express.Router();
 
-router.get("/addproblem", (req, res) => {
+router.post("/addproblem", (req, res) => {
   console.log(req.body);
   //   const {problem,problemDetails} ={...req.body};
   const problem1 = new Problem(req.body);
@@ -20,7 +21,7 @@ router.get("/addproblem", (req, res) => {
     });
 });
 
-router.get("/addspecies", (req, res) => {
+router.post("/addspecies", (req, res) => {
   const species = req.body.species;
   const id = req.body.id;
   const species1 = new Species({ species, problems: id });
@@ -36,7 +37,7 @@ router.get("/addspecies", (req, res) => {
     });
 });
 
-router.get("/problemDetail", (req, res) => {
+router.post("/problemDetail", (req, res) => {
   const problemDetail = req.body;
   const problemDetail1 = new ProblemDetail(problemDetail);
 
@@ -49,6 +50,19 @@ router.get("/problemDetail", (req, res) => {
     .catch((err) => {
       console.log(err);
     });
+});
+
+router.post("/saveProblem", async (req, res) => {
+  const { species, problems, problemdetail } = { ...req.body };
+  console.log(species, problems, problemdetail);
+  const saveProblem = new SaveProblem({ species, problems, problemdetail });
+  // await saveProblem(species, problems, problemdetail)
+  saveProblem
+    .save()
+    .then((result) => {
+      res.json({ saveProblem: result });
+    })
+    .catch((err) => console.log(err));
 });
 
 module.exports = router;
